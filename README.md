@@ -1,1 +1,1 @@
-# -Jeopardy-Clone-App
+# Jeopardy-Clone-App
