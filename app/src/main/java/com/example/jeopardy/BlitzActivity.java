@@ -22,9 +22,9 @@ import retrofit2.Response;
 
 
 public class BlitzActivity extends AppCompatActivity {
-    private final long COUNT_DOWN_IN_MILLIS = 30000;
+    public final static long COUNT_DOWN_IN_MILLIS = 30000;
     private final int COUNT = 10;
-    private int currentQuestion = 0;
+    private int currentQuestion;
     private TextView blitzQuestion;
     private TextView countdown;
     private EditText blitzAnswer;
@@ -32,6 +32,22 @@ public class BlitzActivity extends AppCompatActivity {
     private int blitzScore = 0;
     private CountDownTimer countDownTimer;
     private List<TriviaWrapper> questions;
+
+    private final View.OnClickListener submitListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            boolean correctOrIncorrect = checkAnswer();
+            if(correctOrIncorrect) {
+                blitzScore += questions.get(currentQuestion).getValue();
+                ++currentQuestion;
+                blitzAnswer.getText().clear();
+                countDownTimer.cancel();
+                showQuestion();
+            } else {
+                Toast.makeText(getApplicationContext(), "WRONG", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +84,7 @@ public class BlitzActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<TriviaWrapper>> call, Throwable t) {
-                Log.d("test", t.toString());
-                //Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -93,21 +108,7 @@ public class BlitzActivity extends AppCompatActivity {
             String countDownHolder;
             @Override
             public void onTick(long millisUntilFinished) {
-                submitButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean correctOrIncorrect = checkAnswer();
-                        if(correctOrIncorrect) {
-                            blitzScore += questions.get(currentQuestion).getValue();
-                            ++currentQuestion;
-                            blitzAnswer.getText().clear();
-                            cancel();
-                            showQuestion();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "WRONG", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                submitButton.setOnClickListener(submitListener);
                 countDownHolder = "" + millisUntilFinished / 1000;
                 countdown.setText(countDownHolder);
             }
@@ -126,5 +127,4 @@ public class BlitzActivity extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         finish();
     }
-
 }

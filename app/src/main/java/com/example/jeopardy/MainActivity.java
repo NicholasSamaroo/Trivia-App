@@ -1,7 +1,5 @@
 package com.example.jeopardy;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,19 +8,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class MainActivity extends AppCompatActivity {
     private final int BLITZ_REQUEST_CODE = 0;
     private final int MAIN_REQUEST_CODE = 1;
     private final String MAIN_SHOW_SCORE_KEY = "mainBoardScore";
     private final String BLITZ_HIGH_SCORE_KEY = "blitzHighScore";
 
-    TextView mainBoardScoreTextView;
+    private TextView mainBoardScoreTextView;
     private TextView blitzTextView;
 
     private int currentBlitzHighScore;
     private int currentMainHighScore;
 
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
