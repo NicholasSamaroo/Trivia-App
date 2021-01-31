@@ -1,4 +1,4 @@
-package com.example.jeopardy;
+package com.example.jeopardy.View;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.jeopardy.R;
 
 public class MainActivity extends AppCompatActivity {
     private final int BLITZ_REQUEST_CODE = 0;
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         mainBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainBoardNavigation = new Intent(MainActivity.this,MainBoardActivity.class);
+                Intent mainBoardNavigation = new Intent(MainActivity.this, MainBoardActivity.class);
                 startActivity(mainBoardNavigation);
             }
         });
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         blitzButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent blitzNavigation = new Intent(MainActivity.this,BlitzActivity.class);
+                Intent blitzNavigation = new Intent(MainActivity.this, BlitzActivity.class);
                 startActivityForResult(blitzNavigation, BLITZ_REQUEST_CODE);
             }
         });

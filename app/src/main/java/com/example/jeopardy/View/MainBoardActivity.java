@@ -1,30 +1,26 @@
-package com.example.jeopardy;
+package com.example.jeopardy.View;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.example.jeopardy.Models.CategoryObject;
+import com.example.jeopardy.JServiceAPI;
 import com.example.jeopardy.Models.SpecificCategory;
+import com.example.jeopardy.R;
+import com.example.jeopardy.ViewModel.TriviaViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.ObservableSource;
-import io.reactivex.rxjava3.core.Observer;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Function;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainBoardActivity extends AppCompatActivity implements View.OnClickListener, QuestionFragment.mainShowInterface {
     private final int COUNT = 4;
-    private final List<Integer> categoryID = new ArrayList<>();
-    private final List<SpecificCategory> listOfClues = new ArrayList<>();
+    private List<Integer> categoryID = null;
+    private List<SpecificCategory> listOfClues = null;
     private int gameScore = 0;
 
     private JServiceAPI jServiceAPI;
@@ -50,12 +46,44 @@ public class MainBoardActivity extends AppCompatActivity implements View.OnClick
     private TextView row3column3;
     private TextView row4column3;
 
+    private TriviaViewModel triviaViewModel;
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
+        triviaViewModel = new ViewModelProvider(this).get(TriviaViewModel.class);
+        setObservers();
         initializeViews();
+        progressBar = findViewById(R.id.pbLoading);
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+
+    }
+
+    private void setObservers() {
         fetchCategoriesAndClues();
+        triviaViewModel.getComplete().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean) {
+                    initializeBoard();
+                    progressBar.setVisibility(ProgressBar.INVISIBLE);
+                }
+            }
+        });
+        triviaViewModel.getClueData().observe(this, new Observer<List<Integer>>() {
+            @Override
+            public void onChanged(List<Integer> integers) {
+                categoryID = integers;
+            }
+        });
+        triviaViewModel.getCategoryData().observe(this, new Observer<List<SpecificCategory>>() {
+            @Override
+            public void onChanged(List<SpecificCategory> specificCategories) {
+                listOfClues = specificCategories;
+            }
+        });
     }
 
     private void initializeViews() {
@@ -102,7 +130,8 @@ public class MainBoardActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void fetchCategoriesAndClues() {
-        jServiceAPI = RetroFitInstance.getRetrofitInstance().create(JServiceAPI.class);
+        triviaViewModel.initializeBoard(COUNT);
+        /*jServiceAPI = RetroFitInstance.getRetrofitInstance().create(JServiceAPI.class);
         jServiceAPI.getCategories(COUNT)
                 .flatMapIterable(categoryResponseList -> categoryResponseList) // converts your list of movieResponse into an observable which emits one movieResponse object at a time.
                 .flatMap(new Function<CategoryObject, ObservableSource<SpecificCategory>>() {
@@ -134,9 +163,8 @@ public class MainBoardActivity extends AppCompatActivity implements View.OnClick
                     public void onComplete() {
                         initializeBoard();
                     }
-                });
+                });*/
     }
-
 
 
     public void initializeBoard() {
@@ -178,74 +206,74 @@ public class MainBoardActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         Bundle bundle = new Bundle();
 
-        if(v.getId() == R.id.row1column0 || v.getId() == R.id.row2column0 || v.getId() == R.id.row3column0 || v.getId() == R.id.row4column0) {
-            if(v.getId() == R.id.row1column0) {
+        if (v.getId() == R.id.row1column0 || v.getId() == R.id.row2column0 || v.getId() == R.id.row3column0 || v.getId() == R.id.row4column0) {
+            if (v.getId() == R.id.row1column0) {
                 bundle.putString("question", listOfClues.get(0).getClues().get(0).getQuestion());
                 bundle.putString("answer", listOfClues.get(0).getClues().get(0).getAnswer());
                 bundle.putInt("value", listOfClues.get(0).getClues().get(0).getValue());
-            } else if(v.getId() == R.id.row2column0) {
+            } else if (v.getId() == R.id.row2column0) {
                 bundle.putString("question", listOfClues.get(0).getClues().get(1).getQuestion());
                 bundle.putString("answer", listOfClues.get(0).getClues().get(1).getAnswer());
                 bundle.putInt("value", listOfClues.get(0).getClues().get(1).getValue());
-            } else if(v.getId() == R.id.row3column0) {
+            } else if (v.getId() == R.id.row3column0) {
                 bundle.putString("question", listOfClues.get(0).getClues().get(2).getQuestion());
                 bundle.putString("answer", listOfClues.get(0).getClues().get(2).getAnswer());
                 bundle.putInt("value", listOfClues.get(0).getClues().get(2).getValue());
-            } else if(v.getId() == R.id.row4column0) {
+            } else if (v.getId() == R.id.row4column0) {
                 bundle.putString("question", listOfClues.get(0).getClues().get(3).getQuestion());
                 bundle.putString("answer", listOfClues.get(0).getClues().get(3).getAnswer());
                 bundle.putInt("value", listOfClues.get(0).getClues().get(3).getValue());
             }
-        } else if(v.getId() == R.id.row1column1 || v.getId() == R.id.row2column1 || v.getId() == R.id.row3column1 || v.getId() == R.id.row4column1) {
-            if(v.getId() == R.id.row1column1) {
+        } else if (v.getId() == R.id.row1column1 || v.getId() == R.id.row2column1 || v.getId() == R.id.row3column1 || v.getId() == R.id.row4column1) {
+            if (v.getId() == R.id.row1column1) {
                 bundle.putString("question", listOfClues.get(1).getClues().get(0).getQuestion());
                 bundle.putString("answer", listOfClues.get(1).getClues().get(0).getAnswer());
                 bundle.putInt("value", listOfClues.get(1).getClues().get(0).getValue());
-            } else if(v.getId() == R.id.row2column1) {
+            } else if (v.getId() == R.id.row2column1) {
                 bundle.putString("question", listOfClues.get(1).getClues().get(1).getQuestion());
                 bundle.putString("answer", listOfClues.get(1).getClues().get(1).getAnswer());
                 bundle.putInt("value", listOfClues.get(1).getClues().get(1).getValue());
-            } else if(v.getId() == R.id.row3column1) {
+            } else if (v.getId() == R.id.row3column1) {
                 bundle.putString("question", listOfClues.get(1).getClues().get(2).getQuestion());
                 bundle.putString("answer", listOfClues.get(1).getClues().get(2).getAnswer());
                 bundle.putInt("value", listOfClues.get(1).getClues().get(2).getValue());
-            } else if(v.getId() == R.id.row4column1) {
+            } else if (v.getId() == R.id.row4column1) {
                 bundle.putString("question", listOfClues.get(1).getClues().get(3).getQuestion());
                 bundle.putString("answer", listOfClues.get(1).getClues().get(3).getAnswer());
                 bundle.putInt("value", listOfClues.get(1).getClues().get(3).getValue());
             }
-        } else if(v.getId() == R.id.row1column2 || v.getId() == R.id.row2column2 || v.getId() == R.id.row3column2 || v.getId() == R.id.row4column2) {
-            if(v.getId() == R.id.row1column2) {
+        } else if (v.getId() == R.id.row1column2 || v.getId() == R.id.row2column2 || v.getId() == R.id.row3column2 || v.getId() == R.id.row4column2) {
+            if (v.getId() == R.id.row1column2) {
                 bundle.putString("question", listOfClues.get(2).getClues().get(0).getQuestion());
                 bundle.putString("answer", listOfClues.get(2).getClues().get(0).getAnswer());
                 bundle.putInt("value", listOfClues.get(2).getClues().get(0).getValue());
-            } else if(v.getId() == R.id.row2column2) {
+            } else if (v.getId() == R.id.row2column2) {
                 bundle.putString("question", listOfClues.get(2).getClues().get(1).getQuestion());
                 bundle.putString("answer", listOfClues.get(2).getClues().get(1).getAnswer());
                 bundle.putInt("value", listOfClues.get(2).getClues().get(1).getValue());
-            } else if(v.getId() == R.id.row3column2) {
+            } else if (v.getId() == R.id.row3column2) {
                 bundle.putString("question", listOfClues.get(2).getClues().get(2).getQuestion());
                 bundle.putString("answer", listOfClues.get(2).getClues().get(2).getAnswer());
                 bundle.putInt("value", listOfClues.get(2).getClues().get(2).getValue());
-            } else if(v.getId() == R.id.row4column2) {
+            } else if (v.getId() == R.id.row4column2) {
                 bundle.putString("question", listOfClues.get(2).getClues().get(3).getQuestion());
                 bundle.putString("answer", listOfClues.get(2).getClues().get(3).getAnswer());
                 bundle.putInt("value", listOfClues.get(2).getClues().get(3).getValue());
             }
-        } else if(v.getId() == R.id.row1column3 || v.getId() == R.id.row2column3 || v.getId() == R.id.row3column3 || v.getId() == R.id.row4column3) {
-            if(v.getId() == R.id.row1column3) {
+        } else if (v.getId() == R.id.row1column3 || v.getId() == R.id.row2column3 || v.getId() == R.id.row3column3 || v.getId() == R.id.row4column3) {
+            if (v.getId() == R.id.row1column3) {
                 bundle.putString("question", listOfClues.get(3).getClues().get(0).getQuestion());
                 bundle.putString("answer", listOfClues.get(3).getClues().get(0).getAnswer());
                 bundle.putInt("value", listOfClues.get(3).getClues().get(0).getValue());
-            } else if(v.getId() == R.id.row2column3) {
+            } else if (v.getId() == R.id.row2column3) {
                 bundle.putString("question", listOfClues.get(3).getClues().get(1).getQuestion());
                 bundle.putString("answer", listOfClues.get(3).getClues().get(1).getAnswer());
                 bundle.putInt("value", listOfClues.get(3).getClues().get(1).getValue());
-            } else if(v.getId() == R.id.row3column3) {
+            } else if (v.getId() == R.id.row3column3) {
                 bundle.putString("question", listOfClues.get(3).getClues().get(2).getQuestion());
                 bundle.putString("answer", listOfClues.get(3).getClues().get(2).getAnswer());
                 bundle.putInt("value", listOfClues.get(3).getClues().get(2).getValue());
-            } else if(v.getId() == R.id.row4column3) {
+            } else if (v.getId() == R.id.row4column3) {
                 bundle.putString("question", listOfClues.get(3).getClues().get(3).getQuestion());
                 bundle.putString("answer", listOfClues.get(3).getClues().get(3).getAnswer());
                 bundle.putInt("value", listOfClues.get(3).getClues().get(3).getValue());

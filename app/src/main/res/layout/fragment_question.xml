@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".QuestionFragment">
+    tools:context=".View.QuestionFragment">
 
 
     <TextView
@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/type_answer_here"
         android:inputType="text"
+        android:imeOptions="flagNoExtractUi"
         android:layout_below="@+id/question"
         android:layout_centerInParent="true"/>
 

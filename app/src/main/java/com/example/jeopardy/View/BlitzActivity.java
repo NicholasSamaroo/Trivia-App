@@ -1,4 +1,4 @@
-package com.example.jeopardy;
+package com.example.jeopardy.View;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jeopardy.JServiceAPI;
 import com.example.jeopardy.Models.TriviaWrapper;
+import com.example.jeopardy.R;
+import com.example.jeopardy.RetroFitInstance;
 
 import java.util.List;
 
