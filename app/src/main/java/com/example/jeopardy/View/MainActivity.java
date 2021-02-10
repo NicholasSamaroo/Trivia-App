@@ -15,8 +15,6 @@ import com.example.jeopardy.R;
 public class MainActivity extends AppCompatActivity {
     private final int BLITZ_REQUEST_CODE = 0;
     private final int MAIN_REQUEST_CODE = 1;
-    private final String MAIN_SHOW_SCORE_KEY = "mainBoardScore";
-    private final String BLITZ_HIGH_SCORE_KEY = "blitzHighScore";
 
     private TextView mainBoardScoreTextView;
     private TextView blitzTextView;
@@ -32,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         sharedPreferences = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
-        currentMainHighScore = sharedPreferences.getInt(MAIN_SHOW_SCORE_KEY, 0);
-        currentBlitzHighScore = sharedPreferences.getInt(BLITZ_HIGH_SCORE_KEY, 0);
+        currentMainHighScore = sharedPreferences.getInt(getString(R.string.MAIN_SHOW_SCORE_KEY), 0);
+        currentBlitzHighScore = sharedPreferences.getInt(getString(R.string.BLITZ_HIGH_SCORE_KEY), 0);
 
-        String mainBoardHighScoreText = "High Score for the main show: " + currentMainHighScore;
-        String blitzHighScoreText = "High Score for blitz: " + currentBlitzHighScore;
+        String mainBoardHighScoreText = "High-Score: " + currentMainHighScore;
+        String blitzHighScoreText = "High-Score: " + currentBlitzHighScore;
 
         mainBoardScoreTextView = findViewById(R.id.mainBoardHighScore);
         blitzTextView = findViewById(R.id.blitzHighScore);
@@ -45,11 +43,12 @@ public class MainActivity extends AppCompatActivity {
 
         Button mainBoardButton = findViewById(R.id.mainBoardButton);
         Button blitzButton = findViewById(R.id.blitzButton);
+
         mainBoardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainBoardNavigation = new Intent(MainActivity.this, MainBoardActivity.class);
-                startActivity(mainBoardNavigation);
+                Intent mainBoardNavigation = new Intent(MainActivity.this, BoardActivity.class);
+                startActivityForResult(mainBoardNavigation, MAIN_REQUEST_CODE);
             }
         });
 
@@ -83,20 +82,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateBlitzHighScore(int newScore) {
-        String newBlitzHighScore = "High Score for Blitz: " + newScore;
+        String newBlitzHighScore = "New High Score: " + newScore;
         blitzTextView.setText(newBlitzHighScore);
         sharedPreferences = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(BLITZ_HIGH_SCORE_KEY, newScore);
+        editor.putInt(getString(R.string.BLITZ_HIGH_SCORE_KEY), newScore);
         editor.apply();
     }
 
     private void updateMainHighScore(int newScore) {
-        String newMainHighScore = "High Score for Main: " + newScore;
+        String newMainHighScore = "New High Score: " + newScore;
         mainBoardScoreTextView.setText(newMainHighScore);
         sharedPreferences = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(MAIN_SHOW_SCORE_KEY, newScore);
+        editor.putInt(getString(R.string.MAIN_SHOW_SCORE_KEY), newScore);
         editor.apply();
     }
 }

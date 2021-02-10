@@ -7,37 +7,36 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.jeopardy.Models.SpecificCategory;
+import com.example.jeopardy.Models.Random;
 import com.example.jeopardy.Repository.TriviaRepository;
 
 import java.util.List;
 
 public class TriviaViewModel extends AndroidViewModel {
     private TriviaRepository triviaRepository;
-    private LiveData<List<Integer>> clueData;
     private LiveData<List<SpecificCategory>> categoryData;
-    private LiveData<Boolean> complete;
+    private LiveData<List<Random>> blitzData;
 
     public TriviaViewModel(@NonNull Application application) {
         super(application);
         triviaRepository = new TriviaRepository();
-        clueData = triviaRepository.getMutableClueIdData();
         categoryData = triviaRepository.getMutableCategoryData();
-        complete = triviaRepository.getCallStatus();
+        blitzData = triviaRepository.getBlitzData();
     }
 
-    public void initializeBoard(int count) {
-        triviaRepository.getBoardClues(count);
+    public void initializeBoard(int count, int offset) {
+        triviaRepository.getBoardClues(count, offset);
     }
 
-    public LiveData<List<Integer>> getClueData() {
-        return clueData;
+    public void startBlitz(int count) {
+        triviaRepository.getBlitzQuestions(count);
     }
 
     public LiveData<List<SpecificCategory>> getCategoryData() {
         return categoryData;
     }
 
-    public LiveData<Boolean> getComplete() {
-        return complete;
+    public LiveData<List<Random>> getBlitzData() {
+        return blitzData;
     }
 }
