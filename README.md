@@ -1,1 +1,1 @@
-# Jeopardy-Clone-App
+# Trivia-App
