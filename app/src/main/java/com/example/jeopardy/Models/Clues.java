@@ -9,23 +9,15 @@ public class Clues {
         return answer;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
-    }
-
     public String getQuestion() {
         return question;
     }
 
     public int getValue() {
         return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }

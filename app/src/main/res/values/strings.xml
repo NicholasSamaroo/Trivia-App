@@ -1,7 +1,15 @@
 <resources>
-    <string name="app_name">Jeopardy</string>
-    <string name="main_board_button_text">Main Show</string>
-    <string name="blitz">Blitz</string>
+    <string name="app_name">Trivia</string>
+    <string name="main_board_button_text">Play Main Show</string>
+    <string name="blitz">Play Blitz</string>
     <string name="type_answer_here">Type answer here</string>
     <string name="submit">Submit</string>
+    <string name="enter_answer_here">Enter answer here</string>
+    <string name="current_score">Current Score: </string>
+
+    <string name="CATEGORY_OFFSET">categoryOffset</string>
+    <string name="MAIN_SHOW_SCORE_KEY">mainBoardScore</string>
+    <string name="BLITZ_HIGH_SCORE_KEY">blitzHighScore</string>
+
+
 </resources>

@@ -1,19 +1,24 @@
-package com.example.jeopardy;
+package com.example.jeopardy.View;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.jeopardy.R;
+import com.google.android.material.textfield.TextInputEditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,18 +38,35 @@ public class QuestionFragment extends Fragment {
 
     private int value;
     private String answer;
-    private EditText userAnswer;
+    private CountDownTimer countDownTimer;
+    private TextInputEditText userAnswer;
     private TextView countdown;
-    boolean check;
+    private boolean check;
 
-    private final View.OnClickListener submitListener = new View.OnClickListener() {
+    private final TextView.OnEditorActionListener editTextListener = new TextView.OnEditorActionListener() {
         @Override
-        public void onClick(View v) {
-            checkAnswer();
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if(checkAnswer()) {
+                    countDownTimer.cancel();
+                    Toast.makeText(getActivity(), "Correct!", Toast.LENGTH_SHORT).show();
+
+                    mainShowInterface.returnMainShowScore(value);
+
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(0, R.anim.fade_out)
+                            .remove(QuestionFragment.this).commit();
+                } else {
+                    Toast.makeText(getActivity(), "Incorrect!", Toast.LENGTH_LONG).show();
+                }
+            }
+            return false;
         }
     };
 
     private mainShowInterface mainShowInterface;
+
     public interface mainShowInterface {
         void returnMainShowScore(int score);
     }
@@ -98,47 +120,65 @@ public class QuestionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         check = false;
 
+        value = requireArguments().getInt("value");
+        TextView valueText = view.findViewById(R.id.value);
+        valueText.setText(String.valueOf(value));
+
+        TextView category = view.findViewById(R.id.category);
+        category.setText(requireArguments().getString("category"));
+
         TextView question = view.findViewById(R.id.question);
         question.setText(requireArguments().getString("question"));
 
-        value = requireArguments().getInt("value");
-
-        answer = requireArguments().getString("answer");
+        answer = requireArguments().getString("answer").toLowerCase();
         Log.d("fragmentAnswer", answer);
+
         userAnswer = view.findViewById(R.id.answer);
+        userAnswer.setOnEditorActionListener(editTextListener);
 
         countdown = view.findViewById(R.id.countdown);
 
-        Button submit = view.findViewById(R.id.submit);
-        submit.setOnClickListener(submitListener);
+        TextView score = view.findViewById(R.id.mainScore);
+        score.setText(String.valueOf(requireArguments().getInt("gameScore")));
+
         startTimer();
     }
 
-    private void checkAnswer() {
-        check = answer.toLowerCase().equals(userAnswer.getText().toString().toLowerCase());
+    private boolean checkAnswer() {
+        return !(TextUtils.isEmpty(userAnswer.getText().toString())) &&
+                userAnswer.getText().toString().toLowerCase().equals(answer);
     }
 
     private void startTimer() {
-        CountDownTimer countDownTimer = new CountDownTimer(BlitzActivity.COUNT_DOWN_IN_MILLIS, 1000) {
+        countDownTimer = new CountDownTimer(BlitzActivity.COUNT_DOWN_IN_MILLIS, 1000) {
             String countDownHolder;
 
             @Override
             public void onTick(long millisUntilFinished) {
                 countDownHolder = "" + millisUntilFinished / 1000;
                 countdown.setText(countDownHolder);
-                if(check) {
-                    cancel();
-                    mainShowInterface.returnMainShowScore(value);
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(QuestionFragment.this).commit();
-                }
             }
 
             @Override
             public void onFinish() {
                 cancel();
                 mainShowInterface.returnMainShowScore(value * -1);
-                getActivity().getSupportFragmentManager().beginTransaction().remove(QuestionFragment.this).commit();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(0, R.anim.fade_out)
+                        .remove(QuestionFragment.this).commit();
             }
         }.start();
+        // remember to deallocate the timer or whatever was mentioned in the docs and stack overflow posts
+        // handle this when functionality and styling is complete
+        // Whenever the fragment is destroyed, etc.
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }
