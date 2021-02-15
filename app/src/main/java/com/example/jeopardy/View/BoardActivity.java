@@ -19,6 +19,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.jeopardy.Models.Clues;
 import com.example.jeopardy.Models.SpecificCategory;
 import com.example.jeopardy.R;
 import com.example.jeopardy.ViewModel.TriviaViewModel;
@@ -63,6 +64,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
             public void onChanged(List<SpecificCategory> specificCategories) {
                 listOfClues = specificCategories;
                 updateCategoryOffset();
+                prepData();
                 createBoard();
                 progressBar.setVisibility(ProgressBar.GONE);
             }
@@ -74,6 +76,16 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         categoryOffset += 4;
         editor.putInt(getString(R.string.CATEGORY_OFFSET), categoryOffset);
         editor.apply();
+    }
+
+    private void prepData() {
+        for(SpecificCategory i: listOfClues) {
+            for(Clues j: i.getClues()) {
+                if(j.getValue() == 0) {
+                    j.setValue(200);
+                }
+            }
+        }
     }
 
     private void fetchCategoriesAndClues() {

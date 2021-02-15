@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Jeopardy</string>
+    <string name="app_name">Trivia</string>
     <string name="main_board_button_text">Play Main Show</string>
     <string name="blitz">Play Blitz</string>
     <string name="type_answer_here">Type answer here</string>

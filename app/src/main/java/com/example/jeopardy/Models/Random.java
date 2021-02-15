@@ -24,6 +24,10 @@ public class Random {
         return value;
     }
 
+    public void setValue(int value) {
+        this.value = value;
+    }
+
     public int getCategory_id() {
         return category_id;
     }

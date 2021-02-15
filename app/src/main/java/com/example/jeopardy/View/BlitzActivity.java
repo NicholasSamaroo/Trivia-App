@@ -26,7 +26,7 @@ import java.util.List;
 
 public class BlitzActivity extends AppCompatActivity {
     public final static long COUNT_DOWN_IN_MILLIS = 30000;
-    private final int COUNT = 10;
+    private final int COUNT = 5;
     private int currentQuestion;
     private int blitzScore;
 
@@ -94,9 +94,18 @@ public class BlitzActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Random> randoms) {
                 questions = randoms;
+                prepData();
                 showQuestion();
             }
         });
+    }
+
+    private void prepData() {
+        for(Random i: questions) {
+            if(i.getValue() == 0) {
+                i.setValue(200);
+            }
+        }
     }
 
     private void getQuestions() {
