@@ -20,7 +20,7 @@ The board for the "main show" mode is generated dynamically in code by using **G
 
 **STATIC APP IMAGES**
 -------------------
-![LaunchScreen](https://github.com/NicholasSamaroo/Trivia-App/blob/main/staticImages/launch_screen.png)
+![LaunchScreen](https://github.com/NicholasSamaroo/Trivia-App/blob/main/staticImages/launch_screen.jpg)
 
 ![MainShowBoard](https://github.com/NicholasSamaroo/Trivia-App/blob/main/staticImages/main_show_board.png)
 
